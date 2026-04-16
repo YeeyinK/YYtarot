@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>歪歪的塔罗实验室</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="referrer" content="no-referrer">
+</head>
+<body>
+    <h1>✨ 歪歪的塔罗实验室 ✨</h1>
+
+    <div id="question-container">
+    <input type="text" id="user-query" placeholder="在此输入你的问题">
+</div>
+    
+    <div id="setup-area" class="controls">
+        <button onclick="startDraw(1)">单张抽取</button>
+        <button onclick="startDraw(3)">三张抽取</button>
+    </div>
+
+    <div id="result-page" style="display: none;">
+        <div id="display-area"></div>
+        <div id="meaning-area"></div>
+        <button class="retry-btn" onclick="resetGame()">重新抽牌</button>
+    </div>
+
+    <script src="cards.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>

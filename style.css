@@ -1,0 +1,310 @@
+/* 1. 变量定义 */
+:root {
+    --gold: #f9d371;
+    --bg-dark: #0f0f1a;
+    --card-bg: #1b1b2f;
+    --text-white: #ffffff;
+    --accent-red: #ff4d6d;
+}
+
+/* 2. 页面基础设置：全屏居中 */
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    font-family: 'STKaiti', '楷体', serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;    /* 水平居中 */
+    justify-content: center; /* 垂直居中 */
+    min-height: 100vh;      /* 占满屏幕高度 */
+    text-align: center;
+}
+
+/* 3. 标题样式 */
+h1 {
+    color: var(--gold);
+    text-shadow: 0 0 15px rgba(249, 211, 113, 0.4);
+    font-size: 2.8rem;
+    font-weight: bold;
+    letter-spacing: 6px;
+    margin-top: 0;
+    margin-bottom: 80px; /* 拉开标题与按钮的距离 */
+}
+
+#question-container {
+    margin-top: 20px;
+    margin-bottom: 30px; /* 与下方按钮的间距 */
+    width: 90%;
+    max-width: 500px;
+
+    /* ✨ 关键：这行代码会让块级元素在父容器中水平居中 */
+    margin-left: auto;
+    margin-right: auto;
+    
+    /* 确保内部容器也是居中的 */
+    display: flex;
+    justify-content: center;
+}
+
+#user-query {
+    width: 100%;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 3px solid var(--gold);
+    border-radius: 50px;
+    color: white;
+    font-family: 'STKaiti', '楷体', serif;
+    font-size: 1.5rem;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* 确保 padding 不会撑破宽度 */
+}
+
+#user-query:focus {
+    box-shadow: 0 0 15px rgba(249, 211, 113, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* 修改结果页问题显示的样式 */
+.display-question {
+    color: var(--gold);
+    font-style: italic;
+    margin-bottom: 30px;
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* 按钮容器：负责按钮的布局和间距 */
+#setup-area {
+    display: flex;           /* 启用弹性布局 */
+    flex-direction: column;  /* 让按钮竖着排，如果是 row 就是横着排 */
+    align-items: center;     /* 水平居中 */
+    justify-content: center; /* 垂直居中 */
+    gap: 20px;              /* ✨ 核心：这就是你要的按钮之间的间隔距离 */
+    margin-top: 20px;        /* 按钮组距离上方标题的额外距离 */
+}
+
+
+/* 4. 按钮统一样式 (选择按钮 & 重新抽牌按钮) */
+.controls button, .retry-btn {
+    background: transparent;
+    color: var(--gold);
+    border: 3px solid var(--gold);
+    padding: 15px 50px;
+    font-size: 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 280px;
+    font-family: 'STKaiti', '楷体', serif;
+    font-weight: bold;
+    margin: 15px auto;   /* 按钮上下间距 */
+    display: block;      /* 确保居中生效 */
+    outline: none;
+}
+
+.controls button:hover, .retry-btn:hover {
+    background: var(--gold);
+    color: var(--bg-dark);
+    box-shadow: 0 0 30px rgba(249, 211, 113, 0.4);
+    transform: scale(1.05);
+}
+
+/* 5. 抽牌结果容器 */
+#result-page {
+    width: 100%;
+    display: none;       /* 初始隐藏 */
+    flex-direction: column;
+    align-items: center; /* 确保内部元素水平居中 */
+}
+
+/* 卡片并排区域 */
+#display-area {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+/* 6. 单个卡片展示效果 */
+.card-wrapper {
+    width: 200px; /* 统一宽度 */
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    animation: flyIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.card-position-label {
+    position: absolute;
+    top: -50px;         /* 悬浮在卡片上方 */
+    left: 50%;
+    transform: translateX(-50%); /* 水平居中 */
+    z-index: 10;        /* 确保在卡片最上面 */
+    
+    /* ✨ 核心：确保容器本身有足够的空间并强制居中 */
+    display: inline-flex;    /* 根据内容自动调整宽度 */
+    align-items: center;     /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+    min-width: 60px;         /* 给一个最小宽度，防止文字太挤 */
+
+    /* ✨ 统一字体大小 */
+    font-size: 1rem;    /* 使用 rem 确保三者一致 */
+    font-family: 'STKaiti', '楷体', serif;
+    font-weight: bold;
+
+    /* 容器样式 */
+    padding: 6px 18px;
+    border-radius: 30px;
+    border: 2px solid var(--gold);
+    background: rgba(15, 15, 26, 0.9); /* 半透明背景 */
+    box-shadow: 0 4px 15px rgba(249, 211, 113, 0.2);
+
+    white-space: nowrap; /* 强制不换行 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 霓虹发光效果 */
+.card-position-label span {
+    color: var(--gold); /* 统一用金色文字 */
+    text-shadow: 0 0 8px rgba(249, 211, 113, 0.5);
+    letter-spacing: 2px;
+}
+
+/* 鼠标悬停卡片时，标签微微放大 */
+.card-wrapper:hover .card-position-label {
+    transform: translateX(-50%) scale(1.1);
+    box-shadow: 0 0 15px rgba(249, 211, 113, 0.5);
+}
+
+.card-img-box {
+    width: 100%;
+    aspect-ratio: 2 / 3.5;  /* 强制设定比例，塔罗牌通常是这个比例 */
+    border: 3px solid var(--gold);
+    border-radius: 12px;
+    overflow: hidden;       /* 裁剪多余部分 */
+    background: #000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;      /* 核心代码：像裁剪头像一样填满格子，防止比例被拉伸 */
+    display: block;
+}
+
+.reversed-img {
+    transform: rotate(180deg);
+}
+
+/* 卡片下方文字信息 */
+.card-info {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(249, 211, 113, 0.1);
+    border-radius: 8px;
+    width: 100%;           /* 宽度与盒子一致 */
+    box-sizing: border-box; /* 防止 padding 撑大盒子 */
+    min-height: 80px;      /* 给文字一个最小高度，防止名字长短不一导致对齐问题 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card-name {
+    font-size: 1.2rem;
+    color: var(--gold);
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.card-pos {
+    color: var(--accent-red);
+    margin-top: 5px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* 7. 详细文字解释框 */
+#meaning-area {
+    width: 90%;
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 30px;
+    border-radius: 15px;
+    border-top: 2px solid var(--gold);
+    margin: 20px auto 40px auto; /* 上 左右 下 间距，确保居中 */
+    text-align: left; /* 解释文字左对齐方便阅读 */
+    line-height: 1.8;
+}
+
+#meaning-area h2 {
+    text-align: center;      /* 确保标题居中 */
+    color: var(--gold);      /* 保持金色 */
+    margin-top: 0;           /* 消除顶部多余间距 */
+    margin-bottom: 50px;     /* ✨ 增加这个数值，距离就会变大 */
+    font-size: 1.8rem;
+    border-bottom: 1px solid rgba(249, 211, 113, 0.3); /* 可选：加一条淡淡的分割线 */
+    padding-bottom: 15px;    /* 分割线与文字的距离 */
+}
+
+.meaning-item {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px dashed rgba(249, 211, 113, 0.2);
+    padding-bottom: 15px;
+    border-radius: 12px;
+/* ✨ 核心：开启垂直居中 */
+    display: flex;
+    flex-direction: column;  /* 让标题和正文上下排列 */
+    justify-content: center; /* 在纵向上居中内容 */
+    min-height: 60px;       /* ✨ 重要：必须设定一个最小高度，垂直居中才有意义 */
+    text-align: center;      /* 如果你希望文字水平也居中，保留这一行 */
+}
+
+.meaning-item h3 {
+    color: var(--gold);
+    font-size: 1.4rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+    
+    /* ✨ 视觉增强：左边加一条金色的竖线 */
+    border-left: 4px solid var(--gold);
+    padding-left: 15px;
+    
+    /* ✨ 视觉增强：底部加一条淡淡的渐变线 */
+    border-bottom: 1px solid rgba(249, 211, 113, 0.2);
+    padding-bottom: 10px;
+    
+    display: flex;
+    align-items: center;
+    letter-spacing: 1px;
+}
+
+/* 优化后的解释正文 */
+.meaning-text {
+    color: white;         /* 文字颜色稍微调暗一点，与标题拉开差距 */
+    line-height: 1.8;       /* 增加行间距，更易阅读 */
+    font-size: 1rem;
+    text-align: justify;  /* 两端对齐，看起来更整齐 */
+    margin-top: 0;  
+    padding: 0 5px;
+}
+
+/* 8. 飞入动画 */
+@keyframes flyIn {
+    0% { opacity: 0; transform: translateY(100px) scale(0.8); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
